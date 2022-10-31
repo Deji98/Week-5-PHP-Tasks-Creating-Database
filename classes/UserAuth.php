@@ -22,9 +22,7 @@ class UserAuth extends Dbh
         $conn = $this->db->connect();
         if ($this->confirmPasswordMatch($password, $confirmPassword)) {
             $sql = "INSERT INTO students (`full_names`, `email`, `password`, `country`, `gender`) VALUES ('$fullname','$email', '$password', '$country', '$gender')";
-            $select = "SELECT email FROM students where email='$email'";
-            $result = $conn->query($select);
-            if ($result->num_rows > 0) {
+            if ($this->checkEmailExist($email) === true) {
                 echo "<script>alert('User already exists')</script>";
                 header('refresh:1; url=forms/register.php');
             } else {
@@ -35,6 +33,9 @@ class UserAuth extends Dbh
                     echo 'Opps' . $conn->error;
                 }
             }
+        } else {
+            echo "<script>alert('Your passwords do not match')</script>";
+            header('refresh:0.5;url=forms/register.php');
         }
     }
 
